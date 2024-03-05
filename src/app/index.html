@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Visual Analytics Project</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/viewport-style.css">
+</head>
+<body>
+	<div id="app">
+		<div id="general-controls" class="app-cell">
+			<div id="general-controls-container"></div>
+			<div id="general-gradient-legend"></div>
+		</div>
+		<div id="filters-categories" class="app-cell">
+			<div id="filters-categories-languages" class="sub-section">
+				<div class="title">
+					<div class="title-text">game languages</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			<div id="filters-categories-player-mode" class="sub-section">
+				<div class="title">
+					<div class="title-text">player modes</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			<div id="filters-categories-content-rating" class="sub-section">
+				<div class="title">
+					<div class="title-text">content ratings</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			
+		</div>
+		<div id="info-games" class="app-cell"></div>
+		<div id="filters-ranges" class="app-cell">
+			<div id="filters-ranges-date" class="sub-section">
+				<div class="title">
+					<div class="title-text">Released games by month</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			<div id="filters-ranges-copies-sold" class="sub-section">
+				<div class="title">
+					<div class="title-text">Released games by copies sold</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			<div id="filters-ranges-review-rating" class="sub-section">
+				<div class="title">
+					<div class="title-text">Released games by rating</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+			<div id="filters-ranges-price" class="sub-section">
+				<div class="title">
+					<div class="title-text">Released games by price</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content"></div>
+			</div>
+		</div>
+		<div id="visualization-games-results" class="app-cell">
+			<div id="visualization-games-results-section" class="sub-section">
+				<div class="title">
+					<div class="title-text">
+						<span class="actual-title">Game Results</span>
+						<span class="number-of-results"></span>
+						<span class="number-of-excluded-games"></span>
+					</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content">
+				</div>
+			</div>
+		</div>
+		<div id="filters-tags" class="app-cell">
+			<div id="filter-tags-section" class="sub-section">
+				<div class="title">
+					<div class="title-text">Game Tags</div>
+					<div class="buttons-container">
+						<div id="section-reset-button"></div>
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content">
+					<div id="filter-tags-parallel-coordinates"></div>
+					<div id="filter-tags-ranking"></div>
+				</div>
+			</div>
+		</div>
+		<div id="info-tags" class="app-cell"></div>
+		<div id="visualization-tags-similarity" class="app-cell"></div>
+		<div id="visualization-tags-scatterplot" class="app-cell">
+			<div id="visualization-tags-scatterplot-section" class="sub-section">
+				<div class="title">
+					<div class="title-text">Tags Scatterplot</div>
+					<div class="buttons-container">
+						<!-- <div id="section-reset-button"></div> -->
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content">
+				</div>
+			</div>
+		</div>
+		<div id="visualization-tags-time-series" class="app-cell">
+			<div id="visualization-tags-time-series-section" class="sub-section">
+				<div class="title">
+					<div class="title-text">Tags Time Series</div>
+					<div class="buttons-container">
+						<!-- <div id="section-reset-button"></div> -->
+						<div id="section-info-button"></div>
+					</div>
+				</div>
+				<div class="content">
+				</div>
+			</div>
+		</div>
+		<!-- Cover element shown behind cells when a cell is scaled up -->
+		<div id="app-cover"></div>
+	</div>
+	<!-- Tooltip container -->
+	<div class="tooltip"></div>
+	<!-- Loading screen -->
+	<div id="loading-screen">
+		
+	</div>
+	<!-- Debug container (appears on error, showing error messages) -->
+	<div class="debug-container" style="display: none;"></div>
+	
+	<!-- Scripts -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+	<script>
+		const SHOW_ERROR_MESSAGES = false;
+		// On error, show element ".debug-container" and append the error message
+		window.onerror = function (message, source, lineno, colno, error) {
+			if (!SHOW_ERROR_MESSAGES) return;
+			$(".debug-container").css("display", "block");
+			$(".debug-container").append("<p>" + message + "</p>");
+			$(".debug-container").append("<p>" + source + "</p>");
+			$(".debug-container").append("<p>Line: " + lineno + "</p>");
+		};
+	</script>
+	<script type="text/javascript" src="js/script.js"></script>
+</body>

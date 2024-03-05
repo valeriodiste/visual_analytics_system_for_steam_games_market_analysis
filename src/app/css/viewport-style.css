@@ -1,0 +1,296 @@
+:root {
+	/* App viewport size*/
+	/* App cells */
+	--single-app-cell-size-horizontal: calc(100% / 17);
+	--single-app-cell-size-vertical: calc(100% / 24);
+	/* App cell margin */
+	--app-cell-margin: 0.05em;
+	--app-cell-internal-padding: 0.1em;
+	/* Use fixed aspect ratio (16:9) - Width controls height*/
+	/* --viewport-width: calc(100vw - 2 * var(--app-cell-margin));
+	--viewport-height: calc(var(--viewport-width) * 9 / 16 - 2 * var(--app-cell-margin)); */
+	/* Use fixed aspect ratio (16:9) - Height controls width*/
+	/* --viewport-width: calc(var(--viewport-height) * 16 / 9 - 2 * var(--app-cell-margin));
+	--viewport-height: calc(100vh - 2 * var(--app-cell-margin)); */
+	/* Use fixed aspect ratio (16:9) - 50% weight to width, 50% weight to height */
+	--viewport-width: min(calc(100vw - 2 * var(--app-cell-margin)), calc(100vh - 2 * var(--app-cell-margin)) * 16 / 9);
+	--viewport-height: min(calc(100vh - 2 * var(--app-cell-margin)), calc(100vw - 2 * var(--app-cell-margin)) * 9 / 16);
+	/* Use adaptable aspect ratio */
+	/* --viewport-width: calc(100vw - 2 * var(--app-cell-margin));
+	--viewport-height: calc(100vh - 2 * var(--app-cell-margin)); */
+	/* Use fixed pixel size */
+	/* --viewport-width: calc(1920px - 2 * var(--app-cell-margin));
+	/* --viewport-height: calc(1080px - 2 * var(--app-cell-margin)); */
+	/* Font size */
+	--default-font-size: 16;
+	--size-pixel-multiplier: calc(var(--viewport-width) / 1536);
+}
+a {
+	all: unset;
+	font-weight: bold;
+	cursor: pointer;
+}
+a:hover {
+	text-decoration: underline;
+}
+.app-cell {
+	position: absolute;
+	font-size: 1em;
+	/* Set a color for debug */
+	/* background-color: #999999; */
+	/* Sizes */
+	width: calc(var(--cell-width) * var(--single-app-cell-size-horizontal) - var(--app-cell-margin) * 2);
+	height: calc(var(--cell-height) * var(--single-app-cell-size-vertical) - var(--app-cell-margin) * 2);
+	top: calc(var(--cell-top) * var(--single-app-cell-size-vertical) + var(--app-cell-margin));
+	left: calc(var(--cell-left) * var(--single-app-cell-size-horizontal) + var(--app-cell-margin));
+	/* Default scale pup size multiplier */
+	--scale-up-multiplier: 1.5;
+	--scale-up-width-modifier: 1;
+	--scale-up-height-modifier: 1;
+	--scale-up-text-size-multiplier: 1;
+	/* Default scale up origin */
+	--scale-up-origin: center center;
+	/* Transition animations */
+	transform: scale(1);
+	/* Scale up cell avoiding blurry looking */
+	/* transform: scale(1) translateZ(0);
+	backface-visibility: hidden;
+	will-change: unset; */
+	/* Set the transform origin */
+	transform-origin: var(--scale-up-origin);
+	filter: drop-shadow(0 0 0.5em #00000000) blur(0.0px);
+	z-index: 1;
+	/* transition: 0.075s 0.075s ease-in-out; */
+	transition:
+		transform 0.1s ease-in-out 0s,
+		width 0.075s ease-in-out 0s,
+		z-index 0s ease-in-out 0.1s;
+	/* Avoid blurry looking */
+	/* will-change: initial; */
+	/* backface-visibility: hidden; */
+}
+/* .app-cell:hover { */
+.app-cell:not(#general-controls).scale-up {
+	/* Scale the cell up */
+	transform: scale(var(--scale-up-multiplier));
+	/* transform: scale(2); */
+	/* Scale up cell avoiding blurry looking */
+	/* transform: scale(var(--scale-up-multiplier)) translateZ(0);
+	backface-visibility: hidden;
+	will-change: unset; */
+	/* Set the cell to have a shadow on scale up*/
+	filter: drop-shadow(0 0 1em #00000050);
+	z-index: 3;
+	width: calc(var(--cell-width) * var(--single-app-cell-size-horizontal) * var(--scale-up-width-modifier) - var(--app-cell-margin) * 2);
+	height: calc(var(--cell-height) * var(--single-app-cell-size-vertical) * var(--scale-up-height-modifier) - var(--app-cell-margin) * 2);
+	font-size: calc(1em * var(--scale-up-text-size-multiplier));
+	/* Show borders */
+	border: calc(var(--app-cell-margin) * 4 / var(--scale-up-multiplier)) solid #ffffff20;
+	/* Translate the cell up by an amount equal to the border width */
+	top: calc(var(--cell-top) * var(--single-app-cell-size-vertical) + var(--app-cell-margin) - calc(var(--app-cell-margin) * 4 / var(--scale-up-multiplier)));
+	left: calc(var(--cell-left) * var(--single-app-cell-size-horizontal) + var(--app-cell-margin) - calc(var(--app-cell-margin) * 4 / var(--scale-up-multiplier)));
+	/* right: calc(var(--cell-left) * var(--single-app-cell-size-horizontal) + var(--app-cell-margin) - calc(var(--app-cell-margin) * 4 / var(--scale-up-multiplier))); */
+	transition:
+		transform 0.1s ease-in-out 0s,
+		width 0.075s ease-in-out 0s,
+		z-index 0s ease-in-out 0s;
+}
+/* Add a div to cover the rest of the app */
+#app:not(:has(.app-cell:not(#general-controls).scale-up)) #app-cover {
+	/* Hide the element */
+	display: none;
+	pointer-events: none;
+}
+/* #app:has(.app-cell:not(#general-controls).scale-up)::after { */
+#app:has(.app-cell:not(#general-controls).scale-up) #app-cover {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: #00000070;
+	z-index: 2;
+	pointer-events: all;
+}
+/* Single app cells dimensions and positions */
+#general-controls {
+	--cell-width: 3;
+	--cell-height: 2;
+	--cell-top: 0;
+	--cell-left: 0;
+	--scale-up-origin: top left;
+	--scale-up-multiplier: 1;
+}
+#filters-categories {
+	--cell-width: 3;
+	--cell-height: 14;
+	--cell-top: 2;
+	--cell-left: 0;
+	--scale-up-origin: top left;
+}
+#info-games {
+	--cell-width: 3;
+	--cell-height: 8;
+	--cell-top: 16;
+	--cell-left: 0;
+	--scale-up-origin: bottom left;
+	--scale-up-multiplier: 2.25;
+}
+#filters-ranges {
+	--cell-width: 3;
+	--cell-height: 16;
+	--cell-top: 0;
+	--cell-left: 3;
+	--scale-up-origin: top center;
+	--scale-up-multiplier: 1.5;
+	/* --scale-up-width-modifier: 2; */
+}
+#visualization-games-results {
+	--cell-width: 8;
+	--cell-height: 8;
+	--cell-top: 16;
+	--cell-left: 3;
+	/* --scale-up-origin: bottom center; */
+	/* Calculate a position in percentage based on the --cell-left and --cell-width considering that the total horizontal size is 17 */
+	--origin-horizontal: calc(var(--cell-left) * 100 / 17 + var(--cell-width) * 100 / 17 / 2);
+	--scale-up-origin: 58.5% 202%;
+	--scale-up-multiplier: 1.415;
+	--scale-up-width-modifier: 1.475;
+	--scale-up-height-modifier: 1.75;
+}
+#filters-tags {
+	--cell-width: 5;
+	--cell-height: 16;
+	--cell-top: 0;
+	--cell-left: 6;
+	--scale-up-multiplier: 1.5;
+	/* NOTE: for some reason, setting the transform origin to something different than "top left", which is equivalent to "0 0", makes the whole app cell get blurry whenever the text input for searching tgs on the list is focused... */
+	/* --scale-up-origin: top center; */
+	--scale-up-origin: top left;
+}
+#info-tags {
+	--cell-width: 3;
+	--cell-height: 8;
+	--cell-top: 0;
+	--cell-left: 11;
+	--scale-up-origin: top center;
+	--scale-up-multiplier: 2.25;
+}
+#visualization-tags-similarity {
+	--cell-width: 3;
+	--cell-height: 8;
+	--cell-top: 0;
+	--cell-left: 14;
+	--scale-up-origin: top right;
+	--scale-up-multiplier: calc(24/var(--cell-height));
+}
+#visualization-tags-scatterplot {
+	--cell-width: 6;
+	--cell-height: 8;
+	/* --cell-height: 16; */
+	--cell-top: 8;
+	--cell-left: 11;
+	--scale-up-origin: center right;
+	/* Scale to fill the screen horizontally */
+	--scale-up-multiplier: 2.8345;
+}
+#visualization-tags-time-series {
+	--cell-width: 6;
+	--cell-height: 8;
+	--cell-top: 16;
+	--cell-left: 11;
+	--scale-up-origin: bottom right;
+	--scale-up-multiplier: 2.8345;
+}
+/* ============================== Loading screen ============================== */
+#loading-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: #0b0b0c;
+	z-index: 1500;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* opacity: 1; */
+	color: #ffffff50;
+	/* pointer-events: none; */
+	transition: opacity 0.25s ease-in-out;
+}
+#loading-screen::after {
+	/* Add a rotating loading circle */
+	content: '';
+	width: 5em;
+	height: 5em;
+	border-radius: 50%;
+	border: 0.3em solid #ffffff00;
+	border-top-color: #ffffff50;
+	animation: rotate 1s linear infinite;
+}
+@keyframes rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+#loading-screen.loaded {
+	opacity: 0;
+}
+#loading-screen.can-click {
+	pointer-events: none;
+	animation: none;
+}
+/* ============================== SCROLLBAR ============================== */
+::-webkit-scrollbar {
+	/* width */
+	/* width: 0.325em; */
+	width: calc(var(--default-font-size) * var(--size-pixel-multiplier) * 0.325);
+}
+::-webkit-scrollbar-track {
+	/* Track */
+	background: #00000030;
+	border-radius: 0.375em;
+}
+::-webkit-scrollbar-thumb {
+	/* Handle */
+	background: #ffffff25;
+	/* border-radius: 0.5em; */
+	border-radius: 0.375em;
+}
+::-webkit-scrollbar-thumb:hover {
+	/* Handle on hover */
+	background: #ffffff45;
+}
+/* DEBUG CONTAINER */
+.debug-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: calc(100vw - 1em * 2);
+	height: calc(100vh - 0.65em * 2);
+	color: #ff0000;
+	font-size: 1.25em;
+	z-index: 9999;
+	padding: 0.65em 1em;
+	background-color: #00000075;
+	font-weight: bold;
+	text-shadow: 0 0 0.75em #00000090;
+	font-family: 'Courier New', Courier, monospace;
+	white-space: pre;
+	/* background-color: #00000099; */
+	/* z-index: 2; */
+	pointer-events: none;
+}
+.debug-container::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 5vw;
+	height: 100vh;
+	background: linear-gradient(to left, #ff000090, #ff000000);
+	z-index: 10;
+	pointer-events: none;
+}
